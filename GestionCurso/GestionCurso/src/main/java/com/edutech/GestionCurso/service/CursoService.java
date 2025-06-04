@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.web.client.HttpServerErrorException;
 
 @Service
 @Transactional
@@ -56,8 +57,8 @@ public class CursoService {
         return cursoRepository.save(cursoUpdate);
     }
 
-    public String obtenerCursoConInstructor(String run_profesor) {
-
+public String obtenerCursoConInstructor(String run_profesor) {
+    try {
         String instructorUrl = "http://localhost:8082/api/v1/instructores/" + run_profesor;
         String instructorData = restTemplate.getForObject(instructorUrl, String.class);
 
@@ -65,7 +66,7 @@ public class CursoService {
         
         if (curso == null) {
             return "No se encontró el curso para el profesor con RUN: " + run_profesor;
-        }else{
+        } else {
             StringBuilder resultado = new StringBuilder();
             resultado.append("Curso: \n");
             resultado.append("\n -Curso.").append(curso.getTitulo())
@@ -77,7 +78,10 @@ public class CursoService {
             resultado.append(instructorData);
             return resultado.toString();
         }
+    } catch (HttpServerErrorException e) {
+        return "El instructor con RUN " + run_profesor + " no existe en el sistema";
     }
+}
 
 
 
