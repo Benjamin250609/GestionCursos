@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,6 +30,9 @@ public class CursoService {
     }
 
     public Curso save(Curso curso) {
+
+        curso.setFecha_creacion(LocalDateTime.now());
+
         return cursoRepository.save(curso);
     }
 
@@ -40,13 +44,16 @@ public class CursoService {
         Curso cursoUpdate = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
 
+        cursoUpdate.setCantidad_cupos(curso.getCantidad_cupos());
+        cursoUpdate.setCantidad_inscritos(curso.getCantidad_inscritos());
+        cursoUpdate.setFecha_creacion(LocalDateTime.now());
         cursoUpdate.setDescripcion(curso.getDescripcion());
         cursoUpdate.setEstado(curso.getEstado());
         cursoUpdate.setTitulo(curso.getTitulo());
         cursoUpdate.setRunProfesor(curso.getRunProfesor());
 
 
-        return cursoRepository.save(curso);
+        return cursoRepository.save(cursoUpdate);
     }
 
     public String obtenerCursoConInstructor(String run_profesor) {

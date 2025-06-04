@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="curso")
 @Data
@@ -27,7 +29,7 @@ public class Curso {
     private Boolean estado;
 
     @Column(nullable = false)
-    private String fecha_creacion;
+    private LocalDateTime fecha_creacion;
 
     @Column(nullable = false)
     private Integer cantidad_cupos;

@@ -4,6 +4,8 @@ import com.edutech.GestionCurso.repository.ResenaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.edutech.GestionCurso.model.Curso;
+import com.edutech.GestionCurso.repository.CursoRepository;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class ResenaService {
 
     @Autowired
     ResenaRepository resenaRepository;
+    @Autowired
+    private CursoRepository cursoRepository; // Necesitarás agregar esta inyección
 
     public List<Resena> findAll() {
         return resenaRepository.findAll();
@@ -23,6 +27,15 @@ public class ResenaService {
     }
 
     public Resena save(Resena resena) {
+
+        if (resena.getCurso() == null || resena.getCurso().getId_curso() == null) {
+            throw new IllegalArgumentException("El curso es requerido");
+        }
+        Curso curso = cursoRepository.findById(resena.getCurso().getId_curso())
+            .orElseThrow(() -> new IllegalArgumentException("El curso especificado no existe"));
+
+        resena.setCurso(curso);
+        
         return resenaRepository.save(resena);
     }
 
